@@ -2,7 +2,7 @@
 ```markdown
 # Django Chat Application
 
-This is a Django-based chat application that enables users to communicate in public and private chatrooms. The application utilizes Django Channels for real-time WebSocket communication.
+This is a Django-based chat application that Django Channels for real-time WebSocket communication.
 
 ## Table of Contents
 
