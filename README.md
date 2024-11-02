@@ -27,8 +27,8 @@ This is a Django-based chat application that enables users to communicate in pub
 1. **Clone the repository:**
 
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/godfrey-tankan/serice-django.git
+   cd service-django
    ```
 
 2. **Create a virtual environment:**
