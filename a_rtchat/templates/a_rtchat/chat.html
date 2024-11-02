@@ -1,0 +1,135 @@
+{% extends 'layouts/blank.html' %}
+{% block content %}
+<div class="wrapper block max-w-2xl mx-auto my-10 px-6 header-space">
+  <div class="all-users">
+    <div class="flex items-center justify-between" style="margin-top: 10px; margin-bottom: 20px;">
+      <a href="#" class="text-2xl font-bold text-white">Chats:</a>
+    </div>
+    <div id="message-count-container">
+      {% include 'a_rtchat/partials/new_message_count.html' %}
+  </div>
+
+    <input id="search-input" type="search" class="rounded-md bg-gray-800 text-white focus:outline-none" placeholder="Search users...">
+
+    {% for current_user in all_users %}
+    {% if current_user.user.username == user.username %}
+    {% else %}
+    <div class="profile-handles" style="border-bottom: 1px solid #283242;border-radius: 1%;">
+      <a href="{% url 'start-chat' current_user.user.username %}" class="flex items-center gap-2 p-4 profile-handle" id="profile-handle-{{ forloop.counter }}">
+        <img class="w-10 h-10 rounded-full object-cover" src="{{ current_user.avatar}}" />
+        <div>
+          <span class="font-bold text-white">{{ current_user.name }} <br> <span class="text-sm font-light text-gray-400">{{ current_user.info }}</span></span>
+      
+        </div>
+      </a>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  <div id="chat_window" class="h-[40rem] flex flex-col bg-gray-800 rounded-2xl shadow-2xl relative p-1 chat-container">
+    
+    <div class="flex justify-center text-emerald-400 bg-gray-800 p-2 sticky top-0 z-10 mobile-header" style="background-color: #202b3a;">
+      
+      <a href="{% url 'profiles' %}"><i class="bx bx-arrow-back" id="arrow-back"></i></a>
+      
+      {% if other_user %}
+      <div id="online-icon" class="gray-dot absolute top-2 left-2"></div>
+      <a href="{% url 'profile' other_user.username %}">
+        <div class="flex items-center gap-2 p-4 sticky top-0 z-10">
+          <img  class="w-10 h-10 rounded-full object-cover user-profile-image" src="{{ other_user.profile.image.url }}" />
+          <div>
+            <span class="font-bold text-white">{{ other_user.profile.name }}
+
+            </span>
+          </div>
+        </div>
+      </a>
+      {% else %}
+      <span style="display: flex;padding-right:20px; color: aliceblue; font-weight: bolder;text-transform: capitalize;">{{ chatroom_name }}</span>
+      <div id="online-icon"></div>
+      <span id="online-count" class="pr-1">...</span>online
+      {% endif %}
+    </div>
+    <div id="chat_container" class="overflow-y-auto grow mobile-chat-container">
+      {% if other_user %}
+      <span class="private-note" style="color: #4d535c;display: flex;justify-content: center;justify-items: center;align-content: center; font-size: 12px;font-style: italic;">ⓘ This is a private chat.</span>
+      {% else %}
+      <span class="private-note"></span>
+      {% endif %}
+      <ul id="chat_messages" class="flex flex-col justify-end gap-2 p-4" style="padding-bottom: 120px;">
+        {% for message in chat_messages reversed %}
+        {% include 'a_rtchat/chat_message.html' %}
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="sticky bottom-0 z-10 p-2 bg-gray-800 mobile-styles">
+      <div class="flex items-center rounded-xl px-2 py-2">
+        <form id="chat_message_form"  class="w-full message-form" ws-send _="on htmx:wsAfterSend reset() me">
+          {% csrf_token %}
+          {{ form }}
+          <i id='send-btn' class="bx bx-send bx-sm text-white" method="POST" class="w-full message-form" hx-ext="ws" ws-connect="/ws/chatroom/{{ chatroom_name }}/" ws-send _="on htmx:wsAfterSend" ></i>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+const searchInput = document.getElementById('search-input');
+const profilesContainer = document.getElementById('profiles-container');
+const profileHandles = document.querySelectorAll('.profile-handle');
+
+searchInput.addEventListener('input', () => {
+  const searchTerm = searchInput.value.toLowerCase();
+
+  profileHandles.forEach((handle) => {
+    const username = handle.querySelector('.font-bold').textContent.toLowerCase();
+    const info = handle.querySelector('.text-gray-400').textContent.toLowerCase();
+
+    if (username.includes(searchTerm) || info.includes(searchTerm)) {
+      handle.parentElement.style.display = 'block';
+    } else {
+      handle.parentElement.style.display = 'none';
+    }
+  });
+});
+  function toggleMobileView() {
+    const allUsers = document.querySelector('.all-users');
+    const chatWindow = document.getElementById('chat_window');
+
+    allUsers.classList.add('hide');
+    chatWindow.classList.add('show');
+  }
+  document.querySelectorAll('.profile-handle').forEach((handle) => {
+    const currentUrl = window.location.href;
+      if (currentUrl.match(/chat\/room\//)) {
+        document.getElementById('chat_window').classList.add('show');
+        document.getElementById('main-header').classList.add('hide');
+      }
+      else if (currentUrl.match(/profiles\//)) {
+        document.getElementById('chat_window').classList.add('hide');
+
+
+      }
+      else {
+        console.log('neither');
+      }
+
+    handle.addEventListener('click', toggleMobileView);
+  });
+
+  function scrollToBottom() {
+    const chatContainer = document.getElementById('chat_container');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+  scrollToBottom();
+
+  
+</script>
+{% endblock %}
