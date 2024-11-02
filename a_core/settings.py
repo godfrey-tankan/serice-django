@@ -36,11 +36,12 @@ if ENVIRONMENT == 'production':
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'https://django-chats.onrender.com', '*']
+ALLOWED_HOSTS = ['*', 'https://serice-django.onrender.com', '*']
 
-CSRF_TRUSTED_ORIGINS = [ 'http://*' ,'https://django-chats.onrender.com']
+CSRF_TRUSTED_ORIGINS = [ 'http://*' ,'hhttps://serice-django.onrender.com']
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:7001",  
+    "https://serice-django.onrender.com",
 ]
 
 # Application definition
