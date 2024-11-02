@@ -38,10 +38,10 @@ else:
 
 ALLOWED_HOSTS = ['*', 'https://serice-django.onrender.com', '*']
 
-CSRF_TRUSTED_ORIGINS = [ 'http://*' ,'hhttps://serice-django.onrender.com']
+CSRF_TRUSTED_ORIGINS = [ 'https://serice-django.onrender.com' ,'hhttps://serice-django.onrender.com']
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:7001",  
     "https://serice-django.onrender.com",
+    "http://localhost:7001",  
 ]
 
 # Application definition

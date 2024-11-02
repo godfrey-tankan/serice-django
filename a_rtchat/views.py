@@ -7,8 +7,9 @@ from .content_processor import custom_context
 from django.db.models import Q
 from a_users.models import Profile
 import json
+from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
+@csrf_exempt# Create your views here.
 @login_required
 def chat_view(request,chatroom_name='public-chat'):
     request_user_roles = get_object_or_404(Profile, user=request.user).user_type.split(',')[0]
@@ -49,7 +50,7 @@ def chat_view(request,chatroom_name='public-chat'):
     return render(request, 'a_rtchat/chat.html', context)
 
 
-
+@csrf_exempt
 def get_object_or_create_chatroom(request, user_name):
     if request.user.username == user_name:
         return redirect('profiles')
