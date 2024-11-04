@@ -149,4 +149,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
 - **Toggle Debug Mode**: Adjust `DEBUG` in your `.env` file.
 - **Run the Application**: Follow the steps in the "Running the Server" section to start the server.
 
+DJNGO SERVICE DEFAULT USER TO MANAGE MESSAGES (username: admin@admin.com password: admin) or login with Node js users using their username and '1234' password
 
